@@ -38,6 +38,7 @@ void AAimTrainerGameMode::OnTargetHit()
 
 void AAimTrainerGameMode::BeginPlay()
 {
+	Super::BeginPlay();
 	for (TActorIterator<ATargetPoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (ActorItr->GetName() == TEXT("StartSpawn"))

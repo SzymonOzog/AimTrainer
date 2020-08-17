@@ -14,13 +14,14 @@ public:
 	AAimTrainerGameMode();
 	void SpawnTarget();
 	void OnTargetHit();
+	UPROPERTY(BlueprintReadOnly)
+	int32 targetsHit = 0;
 protected:
 	virtual void BeginPlay() override;
 private:
 	FVector RandomVectorInRange(const FVector& startRange, const FVector& endRange) const;
 	class ATargetPoint* startPoint;
 	ATargetPoint* endPoint;
-	uint32 targetsHit = 0;
 	UPROPERTY(EditAnywhere, Category = "Target")
 	TSubclassOf<class ATarget> Target;
 };
