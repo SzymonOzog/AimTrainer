@@ -125,10 +125,6 @@ void AAimTrainerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AAimTrainerCharacter::OnResetVR);
 
-	// Bind movement events
-	PlayerInputComponent->BindAxis("MoveForward", this, &AAimTrainerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AAimTrainerCharacter::MoveRight);
-
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
@@ -253,24 +249,6 @@ void AAimTrainerCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const F
 //		}
 //	}
 //}
-
-void AAimTrainerCharacter::MoveForward(float Value)
-{
-	if (Value != 0.0f)
-	{
-		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
-	}
-}
-
-void AAimTrainerCharacter::MoveRight(float Value)
-{
-	if (Value != 0.0f)
-	{
-		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value);
-	}
-}
 
 void AAimTrainerCharacter::TurnAtRate(float Rate)
 {
