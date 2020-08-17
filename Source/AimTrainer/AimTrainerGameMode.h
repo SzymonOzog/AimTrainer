@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "AimTrainerGameMode.generated.h"
-
 UCLASS(minimalapi)
 class AAimTrainerGameMode : public AGameModeBase
 {
@@ -13,6 +12,15 @@ class AAimTrainerGameMode : public AGameModeBase
 
 public:
 	AAimTrainerGameMode();
+	void SpawnTarget();
+protected:
+	virtual void BeginPlay() override;
+private:
+	FVector RandomVectorInRange(const FVector& startRange, const FVector& endRange) const;
+	class ATargetPoint* startPoint;
+	ATargetPoint* endPoint;
+	UPROPERTY(EditAnywhere, Category = "Target")
+	TSubclassOf<class ATarget> Target;
 };
 
 
