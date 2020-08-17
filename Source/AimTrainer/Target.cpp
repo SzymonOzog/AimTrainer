@@ -13,7 +13,7 @@ ATarget::ATarget()
 void ATarget::BeginPlay()
 {
 	Super::BeginPlay();
-	float scale = FMath::RandRange(0.2f, 1.5f);
+	float scale = FMath::RandRange(0.4f, 1.5f);
 	FVector scale3D(scale, scale, scale);
 	SetActorScale3D(scale3D);
 }
