@@ -13,12 +13,14 @@ class AAimTrainerGameMode : public AGameModeBase
 public:
 	AAimTrainerGameMode();
 	void SpawnTarget();
+	void OnTargetHit();
 protected:
 	virtual void BeginPlay() override;
 private:
 	FVector RandomVectorInRange(const FVector& startRange, const FVector& endRange) const;
 	class ATargetPoint* startPoint;
 	ATargetPoint* endPoint;
+	uint32 targetsHit = 0;
 	UPROPERTY(EditAnywhere, Category = "Target")
 	TSubclassOf<class ATarget> Target;
 };

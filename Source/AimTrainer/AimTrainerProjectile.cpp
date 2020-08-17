@@ -3,6 +3,8 @@
 #include "AimTrainerProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Target.h"
+#include "AimTrainerGameMode.h"
 
 AAimTrainerProjectile::AAimTrainerProjectile() 
 {
@@ -30,11 +32,13 @@ AAimTrainerProjectile::AAimTrainerProjectile()
 
 void AAimTrainerProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
+	if (ATarget* target = Cast<ATarget>(OtherActor))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
+		if (AAimTrainerGameMode* GM = Cast<AAimTrainerGameMode>(GetWorld()->GetAuthGameMode()))
+			GM->OnTargetHit();
+		else
+			UE_LOG(LogTemp, Error, TEXT("Invalid Game mode"));
+		target->Destroy();
 	}
 	Destroy();
 }

@@ -30,6 +30,12 @@ void AAimTrainerGameMode::SpawnTarget()
 	GetWorld()->SpawnActor<ATarget>(Target, spawnLocation, rotation);
 }
 
+void AAimTrainerGameMode::OnTargetHit()
+{
+	targetsHit++;
+	SpawnTarget();
+}
+
 void AAimTrainerGameMode::BeginPlay()
 {
 	for (TActorIterator<ATargetPoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
