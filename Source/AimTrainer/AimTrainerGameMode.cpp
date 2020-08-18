@@ -9,6 +9,8 @@
 #include "Target.h"
 #include "Engine/World.h"
 #include "Blueprint/UserWidget.h"
+#include "TimerManager.h"
+#include "Components/InputComponent.h"
 
 AAimTrainerGameMode::AAimTrainerGameMode()
 	: Super()
@@ -44,20 +46,40 @@ void AAimTrainerGameMode::StartRound()
 
 void AAimTrainerGameMode::EndRound()
 {
+	bIsRoundOver = true;
+	ShowEndMessage();
+	//Wait for the user to press E
+	GetWorldTimerManager().SetTimer(InputTimer, this, &AAimTrainerGameMode::WaitForInput, 0.5f, true, 0.5f);
+}
+
+void AAimTrainerGameMode::NewRound()
+{
+	bIsRoundOver = false;
+}
+
+void AAimTrainerGameMode::ShowEndMessage()
+{
 	if (EndMessageWidgetClass)
-	{
 		EndMessage = CreateWidget<UUserWidget>(GetWorld(), EndMessageWidgetClass);
-	}
 	if (EndMessage)
-	{
 		EndMessage->AddToViewport();
+}
+
+void AAimTrainerGameMode::WaitForInput()
+{
+	if (!bIsRoundOver)
+	{
+		EndMessage->RemoveFromViewport();
+		StartRound();
+		GetWorldTimerManager().ClearTimer(InputTimer);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("TimerTick"))
 }
 
 void AAimTrainerGameMode::OnTargetHit()
 {
 	targetsHit++;
-	if (GetWorld()->GetTimeSeconds() >= roundLength)
+	if (GetWorld()->GetTimeSeconds() - roundStartTime >= roundLength)
 		EndRound();
 	else	
 		SpawnTarget();
@@ -66,6 +88,7 @@ void AAimTrainerGameMode::OnTargetHit()
 void AAimTrainerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	GetWorld()->GetFirstPlayerController()->InputComponent->BindAction("StartRound", IE_Pressed, this, &AAimTrainerGameMode::NewRound);
 	for (TActorIterator<ATargetPoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (ActorItr->GetName() == TEXT("StartSpawn"))

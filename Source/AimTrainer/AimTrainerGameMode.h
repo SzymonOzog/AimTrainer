@@ -15,6 +15,9 @@ public:
 	void SpawnTarget();
 	void StartRound();
 	void EndRound();
+	void NewRound();
+	void ShowEndMessage();
+	void WaitForInput();
 	void OnTargetHit();
 	UPROPERTY(BlueprintReadOnly)
 	int32 targetsHit = 0;
@@ -28,7 +31,8 @@ private:
 	TSubclassOf<class ATarget> Target;
 	float roundStartTime = 0.0f;
 	float roundLength = 60.0f;
-
+	bool bIsRoundOver = false;
+	struct FTimerHandle InputTimer;
 	UPROPERTY(EditAnywhere, Category = "Interface")
 		TSubclassOf<class UUserWidget> EndMessageWidgetClass;
 	class UUserWidget* EndMessage;
