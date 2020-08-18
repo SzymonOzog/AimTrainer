@@ -30,10 +30,22 @@ void AAimTrainerGameMode::SpawnTarget()
 	GetWorld()->SpawnActor<ATarget>(Target, spawnLocation, rotation);
 }
 
+void AAimTrainerGameMode::StartRound()
+{
+	targetsHit = 0;
+	roundStartTime = GetWorld()->GetTimeSeconds();
+	SpawnTarget();
+	UE_LOG(LogTemp, Warning, TEXT("StartRound"))
+}
+
 void AAimTrainerGameMode::OnTargetHit()
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnHit"))
 	targetsHit++;
-	SpawnTarget();
+	if(GetWorld()->GetTimeSeconds() >= roundLength)
+		UE_LOG(LogTemp, Warning, TEXT("you shot %i targets"), targetsHit)
+	else	
+		SpawnTarget();
 }
 
 void AAimTrainerGameMode::BeginPlay()
@@ -49,7 +61,7 @@ void AAimTrainerGameMode::BeginPlay()
 	if (startPoint && endPoint)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("StartPoint position is %s, EndPoint is %s"), *startPoint->GetActorLocation().ToString(), *endPoint->GetActorLocation().ToString());
-		SpawnTarget();
+		StartRound();
 	}
 }
 

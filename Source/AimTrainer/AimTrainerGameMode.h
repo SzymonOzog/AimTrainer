@@ -13,6 +13,7 @@ class AAimTrainerGameMode : public AGameModeBase
 public:
 	AAimTrainerGameMode();
 	void SpawnTarget();
+	void StartRound();
 	void OnTargetHit();
 	UPROPERTY(BlueprintReadOnly)
 	int32 targetsHit = 0;
@@ -24,6 +25,8 @@ private:
 	ATargetPoint* endPoint;
 	UPROPERTY(EditAnywhere, Category = "Target")
 	TSubclassOf<class ATarget> Target;
+	float roundStartTime = 0.0f;
+	float roundLength = 60.0f;
 };
 
 
