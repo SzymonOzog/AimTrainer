@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "Target.h"
 #include "Engine/World.h"
+#include "Blueprint/UserWidget.h"
 
 AAimTrainerGameMode::AAimTrainerGameMode()
 	: Super()
@@ -21,6 +22,9 @@ AAimTrainerGameMode::AAimTrainerGameMode()
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> TargetBlueprintFinder(TEXT("Blueprint'/Game/BP_Target.BP_Target'"));
 	Target = (UClass*)TargetBlueprintFinder.Object->GeneratedClass;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> EndMessageClassFinder(TEXT("WidgetBlueprint'/Game/EndMessage.EndMessage_C'"));
+	EndMessageWidgetClass = EndMessageClassFinder.Class;
 }
 
 void AAimTrainerGameMode::SpawnTarget()
@@ -38,12 +42,23 @@ void AAimTrainerGameMode::StartRound()
 	UE_LOG(LogTemp, Warning, TEXT("StartRound"))
 }
 
+void AAimTrainerGameMode::EndRound()
+{
+	if (EndMessageWidgetClass)
+	{
+		EndMessage = CreateWidget<UUserWidget>(GetWorld(), EndMessageWidgetClass);
+	}
+	if (EndMessage)
+	{
+		EndMessage->AddToViewport();
+	}
+}
+
 void AAimTrainerGameMode::OnTargetHit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnHit"))
 	targetsHit++;
-	if(GetWorld()->GetTimeSeconds() >= roundLength)
-		UE_LOG(LogTemp, Warning, TEXT("you shot %i targets"), targetsHit)
+	if (GetWorld()->GetTimeSeconds() >= roundLength)
+		EndRound();
 	else	
 		SpawnTarget();
 }

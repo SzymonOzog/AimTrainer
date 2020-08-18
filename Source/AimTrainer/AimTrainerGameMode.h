@@ -14,6 +14,7 @@ public:
 	AAimTrainerGameMode();
 	void SpawnTarget();
 	void StartRound();
+	void EndRound();
 	void OnTargetHit();
 	UPROPERTY(BlueprintReadOnly)
 	int32 targetsHit = 0;
@@ -27,6 +28,11 @@ private:
 	TSubclassOf<class ATarget> Target;
 	float roundStartTime = 0.0f;
 	float roundLength = 60.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Interface")
+		TSubclassOf<class UUserWidget> EndMessageWidgetClass;
+	class UUserWidget* EndMessage;
+
 };
 
 

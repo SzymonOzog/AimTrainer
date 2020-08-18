@@ -22,9 +22,7 @@ private:
 	/** Crosshair asset pointer */
 	class UTexture2D* CrosshairTex;
 	UPROPERTY(EditAnywhere, Category = "Interface")
-	TSubclassOf<class UUserWidget> HUDWidgetClass;
-	UPROPERTY(EditAnywhere, Category = "Interface")
+	TSubclassOf<class UUserWidget> TargetCounterWidgetClass;
 	class UUserWidget* TargetCounter;
-
 };
 
