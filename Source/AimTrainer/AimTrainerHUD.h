@@ -24,7 +24,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Interface")
 	TSubclassOf<class UUserWidget> HUDWidgetClass;
 	UPROPERTY(EditAnywhere, Category = "Interface")
-	class UUserWidget* Interface;
+	class UUserWidget* TargetCounter;
 
 };
 

@@ -13,7 +13,7 @@ AAimTrainerHUD::AAimTrainerHUD()
 	// Set the crosshair texture
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
 	CrosshairTex = CrosshairTexObj.Object;
-	static ConstructorHelpers::FClassFinder<UUserWidget> UserInterface(TEXT("WidgetBlueprint'/Game/UserInterface.UserInterface_C'"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UserInterface(TEXT("WidgetBlueprint'/Game/TargetCounter.TargetCounter_C'"));
 	HUDWidgetClass = UserInterface.Class;
 }
 
@@ -39,9 +39,9 @@ void AAimTrainerHUD::BeginPlay()
 
 	if (HUDWidgetClass)
 	{
-		Interface = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
-		if (Interface)
-			Interface->AddToViewport();
+		TargetCounter = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+		if (TargetCounter)
+			TargetCounter->AddToViewport();
 	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("Hud class doesn't exist"))
