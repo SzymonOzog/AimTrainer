@@ -29,53 +29,6 @@ AAimTrainerGameMode::AAimTrainerGameMode()
 	EndMessageWidgetClass = EndMessageClassFinder.Class;
 }
 
-void AAimTrainerGameMode::SpawnTarget()
-{
-	FVector spawnLocation = RandomVectorInRange(startPoint->GetActorLocation(), endPoint->GetActorLocation());
-	FRotator rotation(0.0f, 0.0f, 0.0f);
-	GetWorld()->SpawnActor<ATarget>(Target, spawnLocation, rotation);
-}
-
-void AAimTrainerGameMode::StartRound()
-{
-	targetsHit = 0;
-	roundStartTime = GetWorld()->GetTimeSeconds();
-	SpawnTarget();
-	UE_LOG(LogTemp, Warning, TEXT("StartRound"))
-}
-
-void AAimTrainerGameMode::EndRound()
-{
-	bIsRoundOver = true;
-	ShowEndMessage();
-	//Wait for the user to press E
-	GetWorldTimerManager().SetTimer(InputTimer, this, &AAimTrainerGameMode::WaitForInput, 0.5f, true, 0.5f);
-}
-
-void AAimTrainerGameMode::NewRound()
-{
-	bIsRoundOver = false;
-}
-
-void AAimTrainerGameMode::ShowEndMessage()
-{
-	if (EndMessageWidgetClass)
-		EndMessage = CreateWidget<UUserWidget>(GetWorld(), EndMessageWidgetClass);
-	if (EndMessage)
-		EndMessage->AddToViewport();
-}
-
-void AAimTrainerGameMode::WaitForInput()
-{
-	if (!bIsRoundOver)
-	{
-		EndMessage->RemoveFromViewport();
-		StartRound();
-		GetWorldTimerManager().ClearTimer(InputTimer);
-	}
-	UE_LOG(LogTemp, Warning, TEXT("TimerTick"))
-}
-
 void AAimTrainerGameMode::OnTargetHit()
 {
 	targetsHit++;
@@ -95,6 +48,16 @@ void AAimTrainerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	GetWorld()->GetFirstPlayerController()->InputComponent->BindAction("StartRound", IE_Pressed, this, &AAimTrainerGameMode::NewRound);
+	FindSpawnPoints();
+	if (startPoint && endPoint)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StartPoint position is %s, EndPoint is %s"), *startPoint->GetActorLocation().ToString(), *endPoint->GetActorLocation().ToString());
+		StartRound();
+	}
+}
+
+void AAimTrainerGameMode::FindSpawnPoints()
+{
 	for (TActorIterator<ATargetPoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (ActorItr->GetName() == TEXT("StartSpawn"))
@@ -102,11 +65,20 @@ void AAimTrainerGameMode::BeginPlay()
 		else if (ActorItr->GetName() == TEXT("EndSpawn"))
 			endPoint = *ActorItr;
 	}
-	if (startPoint && endPoint)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("StartPoint position is %s, EndPoint is %s"), *startPoint->GetActorLocation().ToString(), *endPoint->GetActorLocation().ToString());
-		StartRound();
-	}
+}
+
+void AAimTrainerGameMode::StartRound()
+{
+	targetsHit = 0;
+	roundStartTime = GetWorld()->GetTimeSeconds();
+	SpawnTarget();
+	UE_LOG(LogTemp, Warning, TEXT("StartRound"))
+}
+
+void AAimTrainerGameMode::SpawnTarget()
+{
+	FVector spawnLocation = RandomVectorInRange(startPoint->GetActorLocation(), endPoint->GetActorLocation());
+	GetWorld()->SpawnActor<ATarget>(Target, spawnLocation, FRotator());
 }
 
 FVector AAimTrainerGameMode::RandomVectorInRange(const FVector& startRange, const FVector& endRange) const
@@ -115,4 +87,37 @@ FVector AAimTrainerGameMode::RandomVectorInRange(const FVector& startRange, cons
 	float y = FMath::RandRange(startRange.Y, endRange.Y);
 	float z = FMath::RandRange(startRange.Z, endRange.Z);
 	return FVector(x, y, z);
+}
+
+void AAimTrainerGameMode::EndRound()
+{
+	bIsRoundOver = true;
+	ShowEndMessage();
+	//Wait for the user to press E
+	GetWorldTimerManager().SetTimer(InputTimer, this, &AAimTrainerGameMode::WaitForInput, 0.5f, true, 0.5f);
+}
+
+void AAimTrainerGameMode::ShowEndMessage()
+{
+	if (EndMessageWidgetClass)
+		EndMessage = CreateWidget<UUserWidget>(GetWorld(), EndMessageWidgetClass);
+	if (EndMessage)
+		EndMessage->AddToViewport();
+}
+
+void AAimTrainerGameMode::NewRound()
+{
+	bIsRoundOver = false;
+}
+
+
+void AAimTrainerGameMode::WaitForInput()
+{
+	if (!bIsRoundOver)
+	{
+		EndMessage->RemoveFromViewport();
+		StartRound();
+		GetWorldTimerManager().ClearTimer(InputTimer);
+	}
+	UE_LOG(LogTemp, Warning, TEXT("TimerTick"))
 }

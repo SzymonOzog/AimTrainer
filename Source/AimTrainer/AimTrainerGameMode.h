@@ -12,12 +12,6 @@ class AAimTrainerGameMode : public AGameModeBase
 
 public:
 	AAimTrainerGameMode();
-	void SpawnTarget();
-	void StartRound();
-	void EndRound();
-	void NewRound();
-	void ShowEndMessage();
-	void WaitForInput();
 	void OnTargetHit();
 	UFUNCTION(BlueprintCallable)
 	float GetRoundTimeSeconds();
@@ -28,7 +22,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 private:
+	void FindSpawnPoints();
+	void StartRound();
+	void SpawnTarget();
 	FVector RandomVectorInRange(const FVector& startRange, const FVector& endRange) const;
+	void EndRound();
+	void ShowEndMessage();
+	void NewRound();
+	void WaitForInput();
+private:
 	class ATargetPoint* startPoint;
 	ATargetPoint* endPoint;
 	UPROPERTY(EditAnywhere, Category = "Target")
