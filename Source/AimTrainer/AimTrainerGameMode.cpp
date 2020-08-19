@@ -79,10 +79,16 @@ void AAimTrainerGameMode::WaitForInput()
 void AAimTrainerGameMode::OnTargetHit()
 {
 	targetsHit++;
-	if (GetWorld()->GetTimeSeconds() - roundStartTime >= roundLength)
+	if (GetRoundTimeSeconds() >= roundLength)
 		EndRound();
 	else	
 		SpawnTarget();
+}
+
+float AAimTrainerGameMode::GetRoundTimeSeconds()
+{
+	float roundTimeSeconds = GetWorld()->GetTimeSeconds() - roundStartTime;
+	return roundTimeSeconds >= roundLength ? roundLength : roundTimeSeconds;
 }
 
 void AAimTrainerGameMode::BeginPlay()

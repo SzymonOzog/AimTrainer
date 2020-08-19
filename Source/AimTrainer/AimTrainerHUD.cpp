@@ -15,6 +15,8 @@ AAimTrainerHUD::AAimTrainerHUD()
 	CrosshairTex = CrosshairTexObj.Object;
 	static ConstructorHelpers::FClassFinder<UUserWidget> TargetCounterClassFinder(TEXT("WidgetBlueprint'/Game/TargetCounter.TargetCounter_C'"));
 	TargetCounterWidgetClass = TargetCounterClassFinder.Class;
+	static ConstructorHelpers::FClassFinder<UUserWidget> TimerClassFinder(TEXT("WidgetBlueprint'/Game/Timer.Timer_C'"));
+	TimerWidgetClass = TimerClassFinder.Class;
 
 }
 
@@ -40,4 +42,8 @@ void AAimTrainerHUD::BeginPlay()
 		TargetCounter = CreateWidget<UUserWidget>(GetWorld(), TargetCounterWidgetClass);
 	if (TargetCounter)
 		TargetCounter->AddToViewport();
+	if (TimerWidgetClass)
+		Timer = CreateWidget<UUserWidget>(GetWorld(), TimerWidgetClass);
+	if (Timer)
+		Timer->AddToViewport();
 }

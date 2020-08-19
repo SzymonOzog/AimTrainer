@@ -19,8 +19,12 @@ public:
 	void ShowEndMessage();
 	void WaitForInput();
 	void OnTargetHit();
+	UFUNCTION(BlueprintCallable)
+	float GetRoundTimeSeconds();
 	UPROPERTY(BlueprintReadOnly)
 	int32 targetsHit = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float roundLength = 60.0f;
 protected:
 	virtual void BeginPlay() override;
 private:
@@ -30,7 +34,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Target")
 	TSubclassOf<class ATarget> Target;
 	float roundStartTime = 0.0f;
-	float roundLength = 60.0f;
 	bool bIsRoundOver = false;
 	struct FTimerHandle InputTimer;
 	UPROPERTY(EditAnywhere, Category = "Interface")
